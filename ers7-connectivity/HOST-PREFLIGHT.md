@@ -49,6 +49,13 @@ Before the robot comes up, write down:
 - expected workstation IP
 - expected robot IP or DHCP range
 
+Current known values on this host:
+
+- Wi-Fi interface: `wlx200db02466d8`
+- SSID: `white`
+- current host Wi-Fi address: `192.168.1.102/24`
+- wired internet interface: `enp3s0`
+
 ## 5. Basic workstation checks
 
 Verify:
@@ -56,6 +63,11 @@ Verify:
 - the USB adapter is not accidentally connected to the normal network
 - the primary workstation network still works independently
 - the dedicated adapter is up and ready
+
+Current validated state:
+
+- `wlx200db02466d8` is connected to `white`
+- `enp3s0` remains connected for normal internet use
 
 ## 6. Robot-facing checks
 

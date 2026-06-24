@@ -22,6 +22,13 @@ SSID:
 
 IP plan:
 
+## Current Baseline
+
+- Host Wi-Fi interface: `wlx200db02466d8`
+- Host Wi-Fi SSID: `white`
+- Host Wi-Fi IPv4: `192.168.1.102/24`
+- Host wired internet interface: `enp3s0`
+
 ## Pre-flight
 
 - USB Wi-Fi adapter attached and recognized

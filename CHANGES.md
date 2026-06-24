@@ -163,6 +163,26 @@ Why:
 - the connectivity effort now has a concrete next step instead of only a high-level intent
 - we need a repeatable operator-side checklist before the first live ERS-7 monitoring session
 
+### 12. Live host Wi-Fi validation for robot network
+
+Updated:
+
+- [ers7-connectivity/LAB-SETUP.md](/home/cartheur/ame/aiventure/aiventure-github/cartheur-aibo/tekkotsu/ers7-connectivity/LAB-SETUP.md)
+- [ers7-connectivity/HOST-PREFLIGHT.md](/home/cartheur/ame/aiventure/aiventure-github/cartheur-aibo/tekkotsu/ers7-connectivity/HOST-PREFLIGHT.md)
+- [ers7-connectivity/SESSION-LOG.md](/home/cartheur/ame/aiventure/aiventure-github/cartheur-aibo/tekkotsu/ers7-connectivity/SESSION-LOG.md)
+
+What changed:
+
+- documented the live MT7601U USB Wi-Fi adapter bring-up
+- recorded the validated interface name `wlx200db02466d8`
+- recorded successful connection to SSID `white`
+- documented the current split between robot Wi-Fi and wired internet
+
+Why:
+
+- the connectivity docs should reflect the real host state we have already verified
+- this gives us a stable baseline before the first live ERS-7 network session
+
 ## Verified Status
 
 The following has been verified in this checkout:

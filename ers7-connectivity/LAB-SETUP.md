@@ -31,6 +31,33 @@ Start with:
 - a simple private subnet such as `192.168.7.0/24`
 - a predictable workstation address such as `192.168.7.1` or `192.168.7.10`
 
+## Current Validated Host Setup
+
+The current workstation setup has been validated enough to continue:
+
+- USB Wi-Fi adapter: `148f:7601` `Ralink/Mediatek MT7601U`
+- kernel driver: `mt7601u`
+- workstation Wi-Fi interface: `wlx200db02466d8`
+- active robot SSID: `white`
+- current Wi-Fi IPv4 on this host: `192.168.1.102/24`
+- wired internet interface: `enp3s0`
+
+Operational meaning:
+
+- `white` is the Wi-Fi network reserved for Aibo Mind 2 / Mind 3 / ERS-7 robot work
+- `enp3s0` remains the normal internet connection for this Debian workstation
+
+This means the host now has a working split between:
+
+- wired network for normal internet access
+- USB Wi-Fi for robot-side connectivity work
+
+Note:
+
+- the current robot Wi-Fi subnet is still `192.168.1.0/24`
+- the wired interface is also on `192.168.1.0/24`
+- this is usable for now, but it is not ideal long term because overlapping subnets make routing and debugging harder
+
 ## Network Policy
 
 For the first successful session, prefer simplicity over elegance:
@@ -78,6 +105,11 @@ This machine should keep two network roles separate:
 - primary network stays untouched for internet and normal work
 - USB Wi-Fi adapter is reserved for ERS-7 experiments
 
+Current live interpretation of that policy:
+
+- `enp3s0` is the internet-facing wired connection
+- `wlx200db02466d8` is the Aibo/Mind robot Wi-Fi connection on `white`
+
 That avoids breaking the rest of the machine while we debug legacy wireless.
 
 ## First Success Criteria
@@ -101,3 +133,14 @@ When we do the first live attempt, record:
 - workstation interface name
 - robot IP
 - whether `59001`, `59010`, and `59011` respond
+
+## Verified This Round
+
+The following has been verified on this Debian host:
+
+1. the MT7601U adapter is physically present on USB
+2. installing firmware allowed the `mt7601u` kernel driver to bind
+3. the host now exposes Wi-Fi interface `wlx200db02466d8`
+4. the adapter can scan for nearby Wi-Fi networks
+5. the adapter successfully connected to SSID `white`
+6. the adapter received IPv4 address `192.168.1.102/24`
