@@ -4,9 +4,9 @@
 
 using namespace std;
 
-typedef char byte;
+typedef char filebyte;
 
-void write(ostream& o, const byte* b, unsigned int n);
+void write(ostream& o, const filebyte* b, unsigned int n);
 
 int main(int argc, const char* argv[]) {
 	if(argc<4) {
@@ -33,8 +33,8 @@ int main(int argc, const char* argv[]) {
 		return 1;
 	}
 	argn++;
-	const byte * srchstr=static_cast<const byte*>(argv[argn++]);
-	const byte * replstr=static_cast<const byte*>(argv[argn++]);
+	const filebyte * srchstr=static_cast<const filebyte*>(argv[argn++]);
+	const filebyte * replstr=static_cast<const filebyte*>(argv[argn++]);
 	for(;argn<argc;argn++)
 		cerr << "Warning: ignoring extra argument `"<<argv[argn]<<"'" << endl;
 	unsigned int srchlen=strlen(static_cast<const char*>(srchstr));
@@ -45,7 +45,7 @@ int main(int argc, const char* argv[]) {
 	}
 	
 	unsigned int bufsize=srchlen*4096;
-	byte * buf = new byte[bufsize];
+	filebyte * buf = new filebyte[bufsize];
 	f.read(buf,srchlen-1);
 	unsigned int cur=f.gcount();
 	
@@ -78,7 +78,7 @@ int main(int argc, const char* argv[]) {
 	return 0;
 }
 
-void write(ostream& o, const byte* b, unsigned int n) {
+void write(ostream& o, const filebyte* b, unsigned int n) {
 	while(n--!=0)
 		o.put(*b++);
 }

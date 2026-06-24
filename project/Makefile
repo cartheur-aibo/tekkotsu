@@ -22,9 +22,9 @@ endif
 include $(TEKKOTSU_ENVIRONMENT_CONFIGURATION)
 
 ifeq ($(MAKELEVEL),0)
-  $(shell echo "  ** Project targeting $(TEKKOTSU_TARGET_MODEL) for build on $(TEKKOTSU_TARGET_PLATFORM) **" > /dev/tty)
-  $(shell echo "  ** TEKKOTSU_DEBUG is $(if $(TEKKOTSU_DEBUG),ON: $(TEKKOTSU_DEBUG),OFF) **" > /dev/tty)
-  $(shell echo "  ** TEKKOTSU_OPTIMIZE is $(if $(TEKKOTSU_DEBUG),DISABLED BY DEBUG,$(if $(TEKKOTSU_OPTIMIZE),ON: $(TEKKOTSU_OPTIMIZE),OFF)) **" > /dev/tty)
+  $(shell echo "  ** Project targeting $(TEKKOTSU_TARGET_MODEL) for build on $(TEKKOTSU_TARGET_PLATFORM) **" >&2)
+  $(shell echo "  ** TEKKOTSU_DEBUG is $(if $(TEKKOTSU_DEBUG),ON: $(TEKKOTSU_DEBUG),OFF) **" >&2)
+  $(shell echo "  ** TEKKOTSU_OPTIMIZE is $(if $(TEKKOTSU_DEBUG),DISABLED BY DEBUG,$(if $(TEKKOTSU_OPTIMIZE),ON: $(TEKKOTSU_OPTIMIZE),OFF)) **" >&2)
 endif
 
 #sanity checks
@@ -59,6 +59,8 @@ ifeq ($(TEKKOTSU_TARGET_PLATFORM),PLATFORM_APERIOS)
 	  $(shell $(TEKKOTSU_ROOT)/aperios/bin/xml2-config --cflags)
   LDFLAGS:=$(LDFLAGS) -lObjectComm -lOPENR  -lInternet -lantMCOOP -lERA201D1 \
 	  $(shell $(TEKKOTSU_ROOT)/aperios/bin/xml2-config --libs) -ljpeg -lpng -lregex
+  WARNING_FLAGS:= \
+	-Wall -Wpointer-arith -Wcast-qual -Woverloaded-virtual
 else
   PLATFORM_FLAGS:=$(shell xml2-config --cflags) -isystem /usr/include/libpng12 \
 	 $(shell if [ -d "$(ICE_ROOT)" ] ; then echo "-DHAVE_ICE -I$(ICE_ROOT)/include"; fi)
@@ -72,6 +74,9 @@ else
           -lreadline -lncurses -ljpeg -lpng12 -lpthread \
           $(if $(HAVE_ICE),-L$(ICE_ROOT)/lib -lIce -lGlacier2 -lIceUtil) \
           $(if $(findstring Darwin,$(shell uname)),-bind_at_load -framework Quicktime -framework Carbon)
+  WARNING_FLAGS:= \
+	-Wall -Wshadow -Wlarger-than-200000 -Wpointer-arith -Wcast-qual \
+	-Woverloaded-virtual -Weffc++ -Wdeprecated -Wnon-virtual-dtor
 endif
 
 ifeq ($(MAKELEVEL),0)
@@ -81,8 +86,7 @@ unexport CXXFLAGS
 CXXFLAGS:= \
 	$(if $(TEKKOTSU_DEBUG),$(TEKKOTSU_DEBUG),$(TEKKOTSU_OPTIMIZE)) \
 	-pipe -ffast-math -fno-common \
-	-Wall -Wshadow -Wlarger-than-200000 -Wpointer-arith -Wcast-qual \
-	-Woverloaded-virtual -Weffc++ -Wdeprecated -Wnon-virtual-dtor \
+	$(WARNING_FLAGS) \
 	-fmessage-length=0 \
 	-I. -I$(TEKKOTSU_ROOT) -I$(TEKKOTSU_ROOT)/Shared/newmat -I$(PROJ_BD) \
 	-isystem $(TEKKOTSU_ROOT)/Shared/jpeg-6b \
@@ -190,7 +194,7 @@ SRCS:=$(patsubst %$(SRCSUFFIX).fsm,$(PROJ_BD)/%-fsm$(SRCSUFFIX),$(SRCS))
 
 EMPTYDEPS:=$(shell find $(PROJ_BD) -type f -name "*\.d" -size 0 -print -exec rm \{\} \;)
 ifneq ($(EMPTYDEPS),)
-EMPTYDEPS:=$(shell echo "Empty dependency files detected: $(EMPTYDEPS)" > /dev/tty)
+EMPTYDEPS:=$(shell echo "Empty dependency files detected: $(EMPTYDEPS)" >&2)
 endif
 
 ifeq ($(filter clean% docs newstick,$(MAKECMDGOALS)),)

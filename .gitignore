@@ -30,3 +30,25 @@
 *.exe
 *.out
 *.app
+
+# Tekkotsu build artifacts
+/build/
+/tools/.toolsBuilt
+/tools/binstrswap/binstrswap
+/tools/filtersyswarn/filtersyswarn
+/tools/mipaltools/StackedIt
+/tools/mon/.aibo3dcache
+
+# OPEN-R stubgen outputs
+/aperios/MMCombo/MMComboStub.cc
+/aperios/MMCombo/MMComboStub.h
+/aperios/MMCombo/def.h
+/aperios/MMCombo/entry.h
+/aperios/SndPlay/SndPlayStub.cc
+/aperios/SndPlay/SndPlayStub.h
+/aperios/SndPlay/def.h
+/aperios/SndPlay/entry.h
+/aperios/TinyFTPD/TinyFTPDStub.cc
+/aperios/TinyFTPD/TinyFTPDStub.h
+/aperios/TinyFTPD/def.h
+/aperios/TinyFTPD/entry.h

@@ -1,40 +1,119 @@
-## tekkotsu
+# Tekkotsu
 
-An open source framework supporting software development for a variety of robotic platforms. 
+Tekkotsu is a robotics framework with strong historical support for Sony AIBO and related research platforms. This checkout contains the framework sources, build system, behaviors, motion code, vision code, and host-side tools.
 
-## About and how to use
+This repo is currently being revived for active AIBO work. The most important practical detail is that the Aperios/Open-R SDK is expected to come from the sibling [`openr-debian`](../openr-debian/README.md) repo instead of a system-wide `/usr/local/OPEN_R_SDK` install.
 
-Welcome to the Tekkotsu framework. Unless otherwise noted, all source code and related files are Copyright 2007, Carnegie Mellon University Tekkotsu Lab Released under the LGPL. Documentation is on the old project home [page](http://www.Tekkotsu.org/) where the online documentation is [here](https://www.cs.cmu.edu/~dst/Tekkotsu/Tutorial/docs.shtml). A presentation of its use, which is very handy, is found [here](/learning/sigcse07-workshop-slides.pdf).
+Recent repo-local revival work is tracked in [CHANGES.md](/home/cartheur/ame/aiventure/aiventure-github/cartheur-aibo/tekkotsu/CHANGES.md).
 
-### Directory Descriptions
+## Current Setup
+
+Expected workspace layout:
+
+```text
+cartheur-aibo/
+├── openr-debian/
+└── tekkotsu/
 ```
-* User Code Template *
-    ------------------
-    project - project template directory, copy to another location for local development
 
-  * Source Files *
-    ------------
+Tekkotsu now prefers this SDK location automatically:
+
+```text
+../openr-debian/sdk/local/OPEN_R_SDK
 ```
-### Platform-Specific Files
 
-* `aperios` - provides support for Sony AIBO robots through the OPEN-R SDK, includes MMCombo, which forks into Main and Motion processes, in addition to Sound and TinyFTPD processes
-* `local` - provides simulation support for the host platform (UNIX variants), as well as communication and device drivers for various hardware.
+If you want to set it explicitly:
 
-### General Source Code
+```bash
+export OPENRSDK_ROOT="$PWD/../openr-debian/sdk/local/OPEN_R_SDK"
+```
 
-* `Behaviors` - Base classes and demo code
-* `DualCoding` - Vision processing package, see [here](http://www.cs.cmu.edu/~dst/Tekkotsu/Tutorial/vr-intro.shtml)
-* `Events` - Base classes and 'custom' events
-* `IPC` - Inter-Process Communication, mutual exclusion and message passing
-* `Motion` - Most motion related classes
-* `Shared` - Utility code
-* `Sound` - Handles mixing and sending sound buffers to system
-* `Vision` - Vision processing code
-* `Wireless` - Networking code
+## Quick Start
 
-### Non-Source Framework Files
-    --------------------------
-* `contrib` - additional code which either hasn't been inlined, or the original submissions of code that has been imported
-* `docs` - scripts, configuration, and other files for the doxygen documentation
-* `tools` - build scripts, utilities, and PC-side tools.
-* `deprecated` - archaic source, but may still be of some interest
+Verify the sibling SDK first:
+
+```bash
+cd ../openr-debian
+export OPENRSDK_ROOT="$PWD/sdk/local/OPEN_R_SDK"
+./scripts/check-openr.sh
+```
+
+Build Tekkotsu from this repo:
+
+```bash
+cd ../tekkotsu
+make TEKKOTSU_LOGVIEW=cat
+```
+
+Notes:
+
+- `TEKKOTSU_LOGVIEW=cat` avoids paging through compiler output with `more`.
+- A full root build will try both the Aperios and local targets for ERS models.
+- Some Java-based tools are optional and will be skipped if Java is not installed.
+
+## Build Modes
+
+Build the framework for Aperios/AIBO:
+
+```bash
+make TEKKOTSU_TARGET_PLATFORM=PLATFORM_APERIOS compile static TEKKOTSU_LOGVIEW=cat
+```
+
+Build the framework for the local host side only:
+
+```bash
+make TEKKOTSU_TARGET_PLATFORM=PLATFORM_LOCAL compile static shared TEKKOTSU_LOGVIEW=cat
+```
+
+Use the project template as the starting point for your own executable builds:
+
+```text
+project/
+```
+
+That directory contains the template `Environment.conf`, project `Makefile`, defaults, and platform-specific project scaffolding.
+
+## Repository Map
+
+Main framework areas:
+
+- `Behaviors` - behavior base classes, demos, monitor behaviors, services, FSM nodes and transitions
+- `DualCoding` - higher-level vision and spatial reasoning code
+- `Events` - event types, routing, translation, timers
+- `IPC` - shared-memory, locking, and process communication support
+- `Motion` - motion commands, motion manager, kinematics, posture and walking code
+- `Shared` - utility code, config/plist support, robot info, world state
+- `Sound` - sound mixing and pitch/audio processing
+- `Vision` - image pipeline and filter-bank based vision code
+- `Wireless` - networking support
+
+Platform/runtime areas:
+
+- `aperios` - AIBO/Open-R specific runtime and build support
+- `local` - host/simulation support and desktop-side drivers
+- `project` - template project for user code
+
+Supporting areas:
+
+- `tools` - helper utilities, monitor tools, conversion tools, training tools
+- `docs` - doxygen config, quick references, benchmarks, and generated docs assets
+- `learning` - workshop slides and supporting material
+
+## Practical Notes For Revival Work
+
+- The top-level build system is legacy but still usable.
+- The most relevant modern integration point for AIBO work is the sibling `openr-debian` SDK/toolchain repo.
+- Aperios builds are now less noisy than before, but the legacy Open-R GCC 3.3 headers can still emit substantial warnings.
+- If you are modernizing code, start by preserving behavior, event, motion, and kinematics semantics before replacing infrastructure.
+
+## References
+
+- Old Tekkotsu project page: http://www.Tekkotsu.org/
+- Archived online docs: https://www.cs.cmu.edu/~dst/Tekkotsu/Tutorial/docs.shtml
+- Vision intro: http://www.cs.cmu.edu/~dst/Tekkotsu/Tutorial/vr-intro.shtml
+- Workshop slides: [learning/sigcse07-workshop-slides.pdf](/home/cartheur/ame/aiventure/aiventure-github/cartheur-aibo/tekkotsu/learning/sigcse07-workshop-slides.pdf)
+- Open-R Debian workspace: [../openr-debian/README.md](/home/cartheur/ame/aiventure/aiventure-github/cartheur-aibo/openr-debian/README.md)
+
+## License Note
+
+The checked-in licensing signals are mixed. The top-level `LICENSE` file, README history, and some imported subcomponents do not all agree exactly. Treat licensing as something to verify before redistribution or commercial reuse.

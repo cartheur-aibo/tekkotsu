@@ -19,9 +19,9 @@ include $(shell echo "$(TEKKOTSU_ENVIRONMENT_CONFIGURATION)" | sed 's/ /\\ /g')
 
 ifeq ($(MAKELEVEL),0)
 INDENT=#empty string just to tokenize leading whitespace removal from the *actual* indentation
-  $(shell echo "  ** Targeting $(TEKKOTSU_TARGET_MODEL) for build on $(TEKKOTSU_TARGET_PLATFORM) **" > /dev/tty)
-  $(shell echo "  ** TEKKOTSU_DEBUG is $(if $(TEKKOTSU_DEBUG),ON: $(TEKKOTSU_DEBUG),OFF) **" > /dev/tty)
-  $(shell echo "  ** TEKKOTSU_OPTIMIZE is $(if $(TEKKOTSU_DEBUG),DISABLED BY DEBUG,$(if $(TEKKOTSU_OPTIMIZE),ON: $(TEKKOTSU_OPTIMIZE),OFF)) **" > /dev/tty)
+  $(shell echo "  ** Targeting $(TEKKOTSU_TARGET_MODEL) for build on $(TEKKOTSU_TARGET_PLATFORM) **" >&2)
+  $(shell echo "  ** TEKKOTSU_DEBUG is $(if $(TEKKOTSU_DEBUG),ON: $(TEKKOTSU_DEBUG),OFF) **" >&2)
+  $(shell echo "  ** TEKKOTSU_OPTIMIZE is $(if $(TEKKOTSU_DEBUG),DISABLED BY DEBUG,$(if $(TEKKOTSU_OPTIMIZE),ON: $(TEKKOTSU_OPTIMIZE),OFF)) **" >&2)
 endif
 
 #sanity checks
@@ -53,6 +53,8 @@ ifeq ($(TEKKOTSU_TARGET_PLATFORM),PLATFORM_APERIOS)
 	  -isystem aperios/include \
 	  $(if $(TEKKOTSU_DEBUG),-DOPENR_DEBUG,) -DLOADFILE_NO_MMAP \
 	  $(shell aperios/bin/xml2-config --cflags)
+  WARNING_FLAGS:= \
+	-Wall -Wpointer-arith -Wcast-qual -Woverloaded-virtual
 else
   PLATFORM_FLAGS:=$(shell xml2-config --cflags) -isystem /usr/include/libpng12 \
 	$(shell if [ -d "$(ICE_ROOT)" ] ; then echo "-DHAVE_ICE -I$(ICE_ROOT)/include"; fi) \
@@ -63,6 +65,9 @@ else
       PLATFORM_FLAGS:=$(PLATFORM_FLAGS) -fPIC
     endif
   endif
+  WARNING_FLAGS:= \
+	-Wall -Wshadow -Wlarger-than-200000 -Wpointer-arith -Wcast-qual \
+	-Woverloaded-virtual -Weffc++ -Wdeprecated -Wnon-virtual-dtor
 endif
 
 ifeq ($(MAKELEVEL),0)
@@ -72,8 +77,7 @@ unexport CXXFLAGS
 CXXFLAGS:= \
 	$(if $(TEKKOTSU_DEBUG),$(TEKKOTSU_DEBUG),$(TEKKOTSU_OPTIMIZE)) \
 	-pipe -ffast-math -fno-common \
-	-Wall -Wshadow -Wlarger-than-200000 -Wpointer-arith -Wcast-qual \
-	-Woverloaded-virtual -Weffc++ -Wdeprecated -Wnon-virtual-dtor \
+	$(WARNING_FLAGS) \
 	-fmessage-length=0 \
 	-I$(TEKKOTSU_ROOT) -I$(TEKKOTSU_ROOT)/Shared/newmat \
 	-D$(TEKKOTSU_TARGET_PLATFORM)  -D$(TEKKOTSU_TARGET_MODEL) \
@@ -208,7 +212,7 @@ $(TK_BD)/$(TEKKOTSU_PCH).d:
 
 EMPTYDEPS:=$(shell find $(TK_BD) -type f -name "*\.d" -size 0 -print -exec rm \{\} \;)
 ifneq ($(EMPTYDEPS),)
-  $(shell echo "Empty dependency files detected: $(EMPTYDEPS)" > /dev/tty)
+  $(shell echo "Empty dependency files detected: $(EMPTYDEPS)" >&2)
 endif
 
 ifeq ($(filter clean% docs alldocs newstick,$(MAKECMDGOALS)),)
@@ -316,6 +320,3 @@ cleanDeps:
 
 cleanDoc:
 	docs/builddocs --clean
-
-
-

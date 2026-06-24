@@ -21,7 +21,7 @@ CXXFLAGS:= -I ../../Shared/newmat -fno-inline \
 # -frename-registers -fomit-frame-pointer -fno-common \
 
 ifeq ($(strip $(shell $(CXX) --version | head -n 1)),powerpc-apple-darwin8-g++-4.0.0 (GCC) 4.0.0 20041026 (Apple Computer, Inc. build 4061))
-$(shell echo "Disabling ROBOOP optimization due to darwin gcc 4.0.0 compiler bug triggered by robot.cpp" > /dev/tty)
+$(shell echo "Disabling ROBOOP optimization due to darwin gcc 4.0.0 compiler bug triggered by robot.cpp" >&2)
 CXXFLAGS:=$(filter-out -O3,$(CXXFLAGS))
 endif
 
