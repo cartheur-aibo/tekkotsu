@@ -15,6 +15,12 @@ This workspace covers:
 
 This workspace does not try to redesign the whole build system.
 
+## Working Files
+
+- [LAB-SETUP.md](/home/cartheur/ame/aiventure/aiventure-github/cartheur-aibo/tekkotsu/ers7-connectivity/LAB-SETUP.md)
+- [HOST-PREFLIGHT.md](/home/cartheur/ame/aiventure/aiventure-github/cartheur-aibo/tekkotsu/ers7-connectivity/HOST-PREFLIGHT.md)
+- [SESSION-LOG.md](/home/cartheur/ame/aiventure/aiventure-github/cartheur-aibo/tekkotsu/ers7-connectivity/SESSION-LOG.md)
+
 ## Current Assumption
 
 We will likely need a dedicated legacy-friendly network for the robot:
@@ -98,6 +104,7 @@ Reach a milestone where:
 
 ## Recommended Next Moves
 
-1. Capture the target network topology we want to use.
-2. Inventory the exact robot-side config files that control wireless and gateway behavior.
-3. Prepare a test log template so live robot sessions produce structured notes instead of scattered memory.
+1. Choose the actual USB Wi-Fi adapter and AP/router for the dedicated lab network.
+2. Fill in [LAB-SETUP.md](/home/cartheur/ame/aiventure/aiventure-github/cartheur-aibo/tekkotsu/ers7-connectivity/LAB-SETUP.md) with the real subnet and security plan.
+3. Walk through [HOST-PREFLIGHT.md](/home/cartheur/ame/aiventure/aiventure-github/cartheur-aibo/tekkotsu/ers7-connectivity/HOST-PREFLIGHT.md) on this Debian machine before the first live robot session.
+4. Use [SESSION-LOG.md](/home/cartheur/ame/aiventure/aiventure-github/cartheur-aibo/tekkotsu/ers7-connectivity/SESSION-LOG.md) during the first power-on and monitor attempt.

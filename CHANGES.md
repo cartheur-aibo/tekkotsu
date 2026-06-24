@@ -151,6 +151,18 @@ Why:
 - Wi-Fi and monitoring bring-up is now a first-class part of the real robot effort
 - this work needs its own checklist and notes area instead of being buried in framework docs
 
+### 11. ERS-7 lab bring-up docs
+
+Added:
+
+- [ers7-connectivity/LAB-SETUP.md](/home/cartheur/ame/aiventure/aiventure-github/cartheur-aibo/tekkotsu/ers7-connectivity/LAB-SETUP.md)
+- [ers7-connectivity/HOST-PREFLIGHT.md](/home/cartheur/ame/aiventure/aiventure-github/cartheur-aibo/tekkotsu/ers7-connectivity/HOST-PREFLIGHT.md)
+
+Why:
+
+- the connectivity effort now has a concrete next step instead of only a high-level intent
+- we need a repeatable operator-side checklist before the first live ERS-7 monitoring session
+
 ## Verified Status
 
 The following has been verified in this checkout:
