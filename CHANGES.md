@@ -139,6 +139,18 @@ Why:
 - new users should be able to reach the first verified AIBO build without reading the full repo map first
 - modern GNU make warns about the old rule syntax even though the build still works
 
+### 10. Dedicated ERS-7 connectivity workspace
+
+Added:
+
+- [ers7-connectivity/README.md](/home/cartheur/ame/aiventure/aiventure-github/cartheur-aibo/tekkotsu/ers7-connectivity/README.md)
+- [ers7-connectivity/SESSION-LOG.md](/home/cartheur/ame/aiventure/aiventure-github/cartheur-aibo/tekkotsu/ers7-connectivity/SESSION-LOG.md)
+
+Why:
+
+- Wi-Fi and monitoring bring-up is now a first-class part of the real robot effort
+- this work needs its own checklist and notes area instead of being buried in framework docs
+
 ## Verified Status
 
 The following has been verified in this checkout:

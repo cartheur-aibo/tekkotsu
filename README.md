@@ -138,6 +138,7 @@ Platform/runtime areas:
 
 Supporting areas:
 
+- `ers7-connectivity` - workspace for live robot Wi-Fi, monitoring, and operator bring-up
 - `tools` - helper utilities, monitor tools, conversion tools, training tools
 - `docs` - doxygen config, quick references, benchmarks, and generated docs assets
 - `learning` - workshop slides and supporting material
