@@ -138,7 +138,9 @@ $(TEKKOTSU_ROOT)/project/Environment.conf:
 
 checkLibs: $(if $(TEKKOTSU_ALWAYS_BUILD),buildLibs,testLibs)
 
-$(TK_BD)/$(TEKKOTSU_PCH).gch $(TK_BD)/%.o: checkLibs
+ifneq ($(TEKKOTSU_PCH),)
+$(TK_BD)/$(TEKKOTSU_PCH).gch: checkLibs
+endif
 
 ifeq ($(TEKKOTSU_ALWAYS_BUILD),)
 $(TK_BD)/$(LIBTEKKOTSU): testLibs

@@ -6,6 +6,33 @@ This repo is currently being revived for active AIBO work. The most important pr
 
 Recent repo-local revival work is tracked in [CHANGES.md](/home/cartheur/ame/aiventure/aiventure-github/cartheur-aibo/tekkotsu/CHANGES.md).
 
+## Easy Start
+
+If you want the shortest path to a real AIBO build, do this:
+
+1. Make sure the workspace looks like `cartheur-aibo/openr-debian` next to `cartheur-aibo/tekkotsu`.
+2. Verify the local Open-R SDK.
+3. Build the template ERS-7 payload from `project/`.
+
+```bash
+cd ../openr-debian
+export OPENRSDK_ROOT="$PWD/sdk/local/OPEN_R_SDK"
+./scripts/check-openr.sh
+
+cd ../tekkotsu/project
+make \
+  TEKKOTSU_ROOT="$(cd .. && pwd)" \
+  TEKKOTSU_TARGET_PLATFORM=PLATFORM_APERIOS \
+  TEKKOTSU_LOGVIEW=cat \
+  compile
+```
+
+If that succeeds, your staged AIBO payload will be in:
+
+```text
+project/ms/open-r/mw/objs/
+```
+
 ## Current Setup
 
 Expected workspace layout:
@@ -59,6 +86,22 @@ Build the framework for Aperios/AIBO:
 make TEKKOTSU_TARGET_PLATFORM=PLATFORM_APERIOS compile static TEKKOTSU_LOGVIEW=cat
 ```
 
+Build the template project into a Memory Stick payload for ERS-7:
+
+```bash
+cd project
+make \
+  TEKKOTSU_ROOT="$(cd .. && pwd)" \
+  TEKKOTSU_TARGET_PLATFORM=PLATFORM_APERIOS \
+  TEKKOTSU_LOGVIEW=cat \
+  compile
+```
+
+That verified build produces:
+
+- `project/build/PLATFORM_APERIOS/TGT_ERS7/aperios/*.bin`
+- `project/ms/open-r/mw/objs/*.bin`
+
 Build the framework for the local host side only:
 
 ```bash
@@ -103,6 +146,7 @@ Supporting areas:
 
 - The top-level build system is legacy but still usable.
 - The most relevant modern integration point for AIBO work is the sibling `openr-debian` SDK/toolchain repo.
+- The project template build expects legacy Aperios-side archives such as `libxml2`, `libz`, `libjpeg`, `libpng`, and `libregex` under `aperios/lib`.
 - Aperios builds are now less noisy than before, but the legacy Open-R GCC 3.3 headers can still emit substantial warnings.
 - If you are modernizing code, start by preserving behavior, event, motion, and kinematics semantics before replacing infrastructure.
 

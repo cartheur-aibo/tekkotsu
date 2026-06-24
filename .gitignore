@@ -33,6 +33,9 @@
 
 # Tekkotsu build artifacts
 /build/
+/project/build/
+/project/ms/bld_info.txt
+/project/ms/open-r/mw/objs/*.bin
 /tools/.toolsBuilt
 /tools/binstrswap/binstrswap
 /tools/filtersyswarn/filtersyswarn

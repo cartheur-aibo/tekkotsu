@@ -92,6 +92,53 @@ It now includes:
 - repo map
 - revival notes
 
+### 7. Project template path stability
+
+Updated:
+
+- [project/Environment.conf](/home/cartheur/ame/aiventure/aiventure-github/cartheur-aibo/tekkotsu/project/Environment.conf:10)
+- [aperios/bin/xml2-config](/home/cartheur/ame/aiventure/aiventure-github/cartheur-aibo/tekkotsu/aperios/bin/xml2-config:1)
+
+What changed:
+
+- `TEKKOTSU_ROOT` is normalized with `abspath` inside the project template
+- `xml2-config` now resolves its own prefix from the script location instead of assuming a relative `aperios/` directory
+
+Why:
+
+- project builds were inheriting relative paths that broke when the framework build was invoked from `project/`
+- legacy `xml2-config` output only worked accidentally when run from the repo root
+
+### 8. Generated-project noise cleanup
+
+Updated [.gitignore](/home/cartheur/ame/aiventure/aiventure-github/cartheur-aibo/tekkotsu/.gitignore:24) to ignore:
+
+- `project/build/`
+- `project/ms/bld_info.txt`
+- generated `project/ms/open-r/mw/objs/*.bin`
+
+Why:
+
+- a successful project build should not immediately dirty the worktree with deployment payloads
+- this keeps source changes easy to review while still allowing real AIBO artifacts to be built locally
+
+### 9. README onboarding and make-warning cleanup
+
+Updated:
+
+- [README.md](/home/cartheur/ame/aiventure/aiventure-github/cartheur-aibo/tekkotsu/README.md:1)
+- [project/Makefile](/home/cartheur/ame/aiventure/aiventure-github/cartheur-aibo/tekkotsu/project/Makefile:139)
+
+What changed:
+
+- added a short "Easy Start" section at the top of the main README
+- replaced a deprecated mixed normal/pattern target rule in the project Makefile
+
+Why:
+
+- new users should be able to reach the first verified AIBO build without reading the full repo map first
+- modern GNU make warns about the old rule syntax even though the build still works
+
 ## Verified Status
 
 The following has been verified in this checkout:
@@ -133,6 +180,54 @@ Verified library artifact:
 
 - [build/PLATFORM_APERIOS/TGT_ERS7/libtekkotsu.a](/home/cartheur/ame/aiventure/aiventure-github/cartheur-aibo/tekkotsu/build/PLATFORM_APERIOS/TGT_ERS7/libtekkotsu.a)
 
+### Project template build
+
+This command completed successfully:
+
+```bash
+cd project
+make \
+  TEKKOTSU_ROOT="$(cd .. && pwd)" \
+  TEKKOTSU_LOGVIEW=cat \
+  TEKKOTSU_TARGET_PLATFORM=PLATFORM_APERIOS \
+  compile
+```
+
+That build:
+
+- rebuilt and reused the framework as needed
+- linked `MMCombo.bin`, `SndPlay.bin`, and `TinyFTPD.bin`
+- compressed the resulting binaries into the project Memory Stick payload
+- copied system files into the `project/ms/` staging tree
+
+Verified project artifacts:
+
+- [project/ms/open-r/mw/objs/mainobj.bin](/home/cartheur/ame/aiventure/aiventure-github/cartheur-aibo/tekkotsu/project/ms/open-r/mw/objs/mainobj.bin)
+- [project/ms/open-r/mw/objs/motoobj.bin](/home/cartheur/ame/aiventure/aiventure-github/cartheur-aibo/tekkotsu/project/ms/open-r/mw/objs/motoobj.bin)
+- [project/ms/open-r/mw/objs/sndplay.bin](/home/cartheur/ame/aiventure/aiventure-github/cartheur-aibo/tekkotsu/project/ms/open-r/mw/objs/sndplay.bin)
+- [project/ms/open-r/mw/objs/tinyftpd.bin](/home/cartheur/ame/aiventure/aiventure-github/cartheur-aibo/tekkotsu/project/ms/open-r/mw/objs/tinyftpd.bin)
+
+### Legacy Aperios library bridge
+
+For this checkout, the project link step was satisfied by repo-local compatibility symlinks in [aperios/lib](/home/cartheur/ame/aiventure/aiventure-github/cartheur-aibo/tekkotsu/aperios/lib:1) for:
+
+- `libxml2.a`
+- `libz.a`
+- `libjpeg.a`
+- `libpng.a`
+- `libregex.a`
+
+These currently point to the older sibling tree:
+
+```text
+../aiventure-aibo/Tekkotsu_4.0.1/aperios/lib
+```
+
+This is a practical bridge, not a final packaging story. A cleaner next step is to either:
+
+1. rebuild those libraries into this repo's `aperios/lib`, or
+2. source them from a dedicated Open-R compatibility package in the workspace
+
 ## What This Means
 
 This repo has crossed an important threshold:
@@ -146,19 +241,19 @@ That gives us a real base for AIBO-focused development instead of only documenta
 
 Recommended order:
 
-1. Build a concrete project target using the `project/` template for `TGT_ERS7`.
-2. Confirm the generated binaries and stick layout are compatible with the `openr-debian` deployment flow.
+1. Replace the temporary `aperios/lib` symlink bridge with checked-in build instructions or reproducible library artifacts.
+2. Confirm the generated `project/ms/` layout against the `openr-debian` deployment flow on real hardware.
 3. Identify the first real robot behavior we care about and trim the project template down to only the required behaviors and motion modules.
 4. Decide whether to keep using the legacy project Makefiles or start introducing a thinner modern wrapper around them.
 
 The most useful immediate next validation is:
 
-- build a project executable, not just `libtekkotsu.a`
-- stage it in an Open-R Memory Stick layout
-- compare that output with the conventions already used in `openr-debian`
+- validate the built `project/ms/` payload on the actual deployment path
+- lock down where the required Aperios-side support libraries should live long term
+- start replacing placeholder project behavior with our first real AIBO behavior module
 
 ## Notes
 
 - Java monitor/training tools are still optional and are skipped when Java is unavailable.
 - Licensing signals in this repo still need review before redistribution decisions.
-- We have not yet finished the full local-host build path in this pass; the verified success here is the Aperios static framework build path.
+- We have not yet finished the full local-host build path in this pass; the verified success here is the repo-local Aperios framework and project build path.
