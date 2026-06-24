@@ -17,9 +17,11 @@ This workspace does not try to redesign the whole build system.
 
 ## Working Files
 
+- [ERS7-WIFI-STEPS.md](/home/cartheur/ame/aiventure/aiventure-github/cartheur-aibo/tekkotsu/ers7-connectivity/ERS7-WIFI-STEPS.md)
 - [LAB-SETUP.md](/home/cartheur/ame/aiventure/aiventure-github/cartheur-aibo/tekkotsu/ers7-connectivity/LAB-SETUP.md)
 - [HOST-PREFLIGHT.md](/home/cartheur/ame/aiventure/aiventure-github/cartheur-aibo/tekkotsu/ers7-connectivity/HOST-PREFLIGHT.md)
 - [SESSION-LOG.md](/home/cartheur/ame/aiventure/aiventure-github/cartheur-aibo/tekkotsu/ers7-connectivity/SESSION-LOG.md)
+- [WLANCONF.white.TXT](/home/cartheur/ame/aiventure/aiventure-github/cartheur-aibo/tekkotsu/ers7-connectivity/WLANCONF.white.TXT)
 
 ## Current Assumption
 

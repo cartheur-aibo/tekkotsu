@@ -58,6 +58,34 @@ Note:
 - the wired interface is also on `192.168.1.0/24`
 - this is usable for now, but it is not ideal long term because overlapping subnets make routing and debugging harder
 
+## Memory Stick Handling
+
+For stick preparation, prefer the Sony-branded Memory Stick reader.
+
+Reason:
+
+- this keeps the media path as close as possible to Sony-era hardware expectations
+- for legacy robot bring-up, fewer adapter/media variables is better
+
+## Current Robot Config Artifact
+
+A concrete ERS-7 Wi-Fi config for the current lab SSID now lives at:
+
+- [WLANCONF.white.TXT](/home/cartheur/ame/aiventure/aiventure-github/cartheur-aibo/tekkotsu/ers7-connectivity/WLANCONF.white.TXT)
+
+It is shaped for the current setup:
+
+- `ESSID=white`
+- `APMODE=1`
+- `USE_DHCP=1`
+- `WEPENABLE=0`
+
+Important caveat:
+
+- the current observed `white` network is `WPA2`
+- the Sony/Open-R ERS-7 config format we found only documents open or WEP networking
+- that means the robot is not expected to join the current `white` as-is until the SSID is changed to open security or WEP on a compatible 2.4 GHz AP
+
 ## Network Policy
 
 For the first successful session, prefer simplicity over elegance:
@@ -144,3 +172,4 @@ The following has been verified on this Debian host:
 4. the adapter can scan for nearby Wi-Fi networks
 5. the adapter successfully connected to SSID `white`
 6. the adapter received IPv4 address `192.168.1.102/24`
+7. a concrete `WLANCONF` file was prepared for the current lab SSID naming and DHCP plan

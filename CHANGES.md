@@ -183,6 +183,51 @@ Why:
 - the connectivity docs should reflect the real host state we have already verified
 - this gives us a stable baseline before the first live ERS-7 network session
 
+### 13. Concrete ERS-7 Wi-Fi config for current lab SSID
+
+Added:
+
+- [ers7-connectivity/WLANCONF.white.TXT](/home/cartheur/ame/aiventure/aiventure-github/cartheur-aibo/tekkotsu/ers7-connectivity/WLANCONF.white.TXT)
+
+Updated:
+
+- [ers7-connectivity/LAB-SETUP.md](/home/cartheur/ame/aiventure/aiventure-github/cartheur-aibo/tekkotsu/ers7-connectivity/LAB-SETUP.md)
+- [ers7-connectivity/README.md](/home/cartheur/ame/aiventure/aiventure-github/cartheur-aibo/tekkotsu/ers7-connectivity/README.md)
+
+What changed:
+
+- created a concrete `WLANCONF` file for SSID `white`
+- documented the current DHCP and infrastructure-mode assumptions
+- documented that the current live `white` network still appears to be `WPA2`
+
+Why:
+
+- we now have a ready-to-copy ERS-7 config artifact for the lab
+- we also need the limitation documented clearly so nobody mistakes the current WPA2 network for an ERS-7-compatible setup
+
+### 14. Step-by-step ERS-7 Wi-Fi bring-up guide
+
+Added:
+
+- [ers7-connectivity/ERS7-WIFI-STEPS.md](/home/cartheur/ame/aiventure/aiventure-github/cartheur-aibo/tekkotsu/ers7-connectivity/ERS7-WIFI-STEPS.md)
+
+Why:
+
+- the lab now needs a short operator-facing procedure, not just reference notes
+- this gives a direct checklist for network prep, stick prep, file placement, boot, and first verification
+
+### 15. Sony Memory Stick reader preference documented
+
+Updated:
+
+- [ers7-connectivity/ERS7-WIFI-STEPS.md](/home/cartheur/ame/aiventure/aiventure-github/cartheur-aibo/tekkotsu/ers7-connectivity/ERS7-WIFI-STEPS.md)
+- [ers7-connectivity/LAB-SETUP.md](/home/cartheur/ame/aiventure/aiventure-github/cartheur-aibo/tekkotsu/ers7-connectivity/LAB-SETUP.md)
+
+Why:
+
+- physical media handling is part of the real ERS-7 workflow
+- the Sony-branded reader is the preferred first choice for AIBO Memory Stick prep
+
 ## Verified Status
 
 The following has been verified in this checkout:
