@@ -27,6 +27,7 @@ This workspace does not try to redesign the whole build system.
 - [SESSION-LOG.md](/home/cartheur/ame/aiventure/aiventure-github/cartheur-aibo/tekkotsu/ers7-connectivity/SESSION-LOG.md)
 - [WLANCONF.TXT](/home/cartheur/ame/aiventure/aiventure-github/cartheur-aibo/tekkotsu/ers7-connectivity/WLANCONF.TXT)
 - [probe-ers7.sh](/home/cartheur/ame/aiventure/aiventure-github/cartheur-aibo/tekkotsu/ers7-connectivity/probe-ers7.sh)
+- [TEKKOTSU-STICK-PLAN.md](/home/cartheur/ame/aiventure/aiventure-github/cartheur-aibo/tekkotsu/ers7-connectivity/TEKKOTSU-STICK-PLAN.md)
 
 ## What Is Already Proven
 
@@ -125,3 +126,4 @@ Reach a milestone where:
 3. Walk through [HOST-PREFLIGHT.md](/home/cartheur/ame/aiventure/aiventure-github/cartheur-aibo/tekkotsu/ers7-connectivity/HOST-PREFLIGHT.md) on this Debian machine before the next live robot session.
 4. Use [probe-ers7.sh](/home/cartheur/ame/aiventure/aiventure-github/cartheur-aibo/tekkotsu/ers7-connectivity/probe-ers7.sh) after each power-on to capture the exact network boundary that is alive.
 5. Use [SESSION-LOG.md](/home/cartheur/ame/aiventure/aiventure-github/cartheur-aibo/tekkotsu/ers7-connectivity/SESSION-LOG.md) during each power-on so stock and Tekkotsu outcomes do not get mixed together.
+6. Use [TEKKOTSU-STICK-PLAN.md](/home/cartheur/ame/aiventure/aiventure-github/cartheur-aibo/tekkotsu/ers7-connectivity/TEKKOTSU-STICK-PLAN.md) as the payload-side plan once larger sticks are available.
