@@ -2,34 +2,37 @@
 
 This is the first-pass connectivity setup for real ERS-7 work.
 
-The goal is not to build the perfect network. The goal is to create the smallest reliable environment where:
+The goal is not to build the perfect network. The goal is to create the
+smallest reliable environment where:
 
 - the robot can associate
 - this workstation can reach it
-- monitoring traffic can flow
+- stock services can be distinguished from Tekkotsu services
+- monitoring traffic can eventually flow
 
-## Recommended Topology
+## Best Current Topology
 
-Use a dedicated AIBO network that is separate from the machine's normal internet connection.
+The best currently proven topology is:
+
+```text
+Debian workstation <-> compatible mobile hotspot named AIBONET <-> ERS-7
+```
+
+That path is already known to work for stock MIND 2 reachability.
+
+## Still-Useful Alternate Topology
+
+A dedicated legacy-friendly AP/router may still become useful later:
 
 ```text
 Debian workstation
   |- primary NIC: normal internet / office / home LAN
-  `- USB Wi-Fi NIC: dedicated ERS-7 lab network
+  `- Wi-Fi NIC: dedicated ERS-7 lab network
 
-USB Wi-Fi NIC <-> legacy-compatible AP/router <-> ERS-7
+Wi-Fi NIC <-> legacy-compatible AP/router <-> ERS-7
 ```
 
-This keeps AIBO experiments isolated and makes troubleshooting much easier.
-
-## Preferred First Attempt
-
-Start with:
-
-- one USB Wi-Fi adapter on this workstation
-- one dedicated router or access point for AIBO use only
-- a simple private subnet such as `192.168.7.0/24`
-- a predictable workstation address such as `192.168.7.1` or `192.168.7.10`
+But it is no longer the only plausible first step.
 
 ## Current Validated Host Setup
 
@@ -38,138 +41,99 @@ The current workstation setup has been validated enough to continue:
 - USB Wi-Fi adapter: `148f:7601` `Ralink/Mediatek MT7601U`
 - kernel driver: `mt7601u`
 - workstation Wi-Fi interface: `wlx200db02466d8`
-- active robot SSID: `white`
-- current Wi-Fi IPv4 on this host: `192.168.1.102/24`
-- wired internet interface: `enp3s0`
-
-Operational meaning:
-
-- `white` is the Wi-Fi network reserved for Aibo Mind 2 / Mind 3 / ERS-7 robot work
-- `enp3s0` remains the normal internet connection for this Debian workstation
-
-This means the host now has a working split between:
-
-- wired network for normal internet access
-- USB Wi-Fi for robot-side connectivity work
-
-Note:
-
-- the current robot Wi-Fi subnet is still `192.168.1.0/24`
-- the wired interface is also on `192.168.1.0/24`
-- this is usable for now, but it is not ideal long term because overlapping subnets make routing and debugging harder
+- hotspot SSID used successfully: `AIBONET`
+- host Wi-Fi IPv4 during the successful session: `192.168.43.120/24`
+- hotspot/router IP: `192.168.43.1`
+- robot IP observed: `192.168.43.8`
 
 ## Memory Stick Handling
 
-For stick preparation, prefer the Sony-branded Memory Stick reader.
+For stick preparation, prefer the Sony-branded Memory Stick reader when
+possible.
 
 Reason:
 
-- this keeps the media path as close as possible to Sony-era hardware expectations
-- for legacy robot bring-up, fewer adapter/media variables is better
+- it keeps the media path closer to Sony-era hardware expectations
+- for legacy robot bring-up, fewer adapter/media variables are better
 
 ## Current Robot Config Artifact
 
-A concrete ERS-7 Wi-Fi config for the current lab SSID now lives at:
+A concrete ERS-7 Wi-Fi config now lives at:
 
-- [WLANCONF.white.TXT](/home/cartheur/ame/aiventure/aiventure-github/cartheur-aibo/tekkotsu/ers7-connectivity/WLANCONF.white.TXT)
+- [WLANCONF.TXT](/home/cartheur/ame/aiventure/aiventure-github/cartheur-aibo/tekkotsu/ers7-connectivity/WLANCONF.TXT)
 
-It is shaped for the current setup:
+It matches the proven hotspot pattern:
 
-- `ESSID=white`
+- `ESSID=AIBONET`
 - `APMODE=1`
 - `USE_DHCP=1`
 - `WEPENABLE=0`
-
-Important caveat:
-
-- the current observed `white` network is `WPA2`
-- the Sony/Open-R ERS-7 config format we found only documents open or WEP networking
-- that means the robot is not expected to join the current `white` as-is until the SSID is changed to open security or WEP on a compatible 2.4 GHz AP
 
 ## Network Policy
 
 For the first successful session, prefer simplicity over elegance:
 
-- isolated SSID
+- open network
 - no roaming assumptions
-- fixed channel
 - no band steering
 - no mesh
 - no WPA3
 
 ## Addressing Strategy
 
-The safest operational plan is to decide up front whether the robot should use:
-
-1. DHCP from the dedicated router
-2. a fixed IP in the dedicated subnet
-
 Recommendation:
 
-- prefer DHCP if the ERS-7 setup supports it cleanly
-- switch to fixed IP only if DHCP proves unreliable or unavailable
-
-## Router / AP Checklist
-
-The dedicated AP/router should be configured as conservatively as possible:
-
-- 2.4 GHz only
-- legacy-friendly mode enabled if available
-- fixed channel
-- simple SSID name
-- simple passphrase if security is supported by the robot
-
-If the robot is sensitive to modern security modes, be ready to test:
-
-- open network on an isolated lab AP
-- WEP only if absolutely required and only on the isolated lab network
-
-Do not put legacy security on the normal household or office network.
-
-## Workstation Policy
-
-This machine should keep two network roles separate:
-
-- primary network stays untouched for internet and normal work
-- USB Wi-Fi adapter is reserved for ERS-7 experiments
-
-Current live interpretation of that policy:
-
-- `enp3s0` is the internet-facing wired connection
-- `wlx200db02466d8` is the Aibo/Mind robot Wi-Fi connection on `white`
-
-That avoids breaking the rest of the machine while we debug legacy wireless.
+- prefer DHCP first
+- move to fixed IP only if DHCP proves unreliable
 
 ## First Success Criteria
 
 The first lab setup is good enough when all of these are true:
 
-1. the USB Wi-Fi adapter is recognized by Linux
-2. the workstation joins or hosts the intended dedicated network
+1. the Wi-Fi adapter is recognized by Linux
+2. the workstation joins the intended ERS-7 network
 3. the ERS-7 associates with that network
 4. the workstation can reach the robot IP
-5. TCP port `59001` responds
+5. stock MIND 2 HTTP on port `80` responds
+
+That is the first network milestone.
+
+Tekkotsu gateway ports are a later milestone.
+
+## Second Success Criteria
+
+The second lab setup milestone is:
+
+1. the intended Tekkotsu/Open-R payload is definitely on the robot
+2. the workstation can still reach the robot IP
+3. TCP `59001` responds
+4. TCP `59010` responds
+5. TCP `59011` responds
 
 ## Notes To Capture During Setup
 
-When we do the first live attempt, record:
+When doing a live attempt, record:
 
-- USB Wi-Fi adapter model and chipset
-- AP/router model
+- Wi-Fi adapter model and chipset
+- hotspot or AP used
 - security mode used
 - subnet used
 - workstation interface name
 - robot IP
-- whether `59001`, `59010`, and `59011` respond
+- whether `ping` worked
+- whether port `80` worked
+- whether `59001`, `59010`, and `59011` responded
 
 ## Verified This Round
 
 The following has been verified on this Debian host:
 
 1. the MT7601U adapter is physically present on USB
-2. installing firmware allowed the `mt7601u` kernel driver to bind
-3. the host now exposes Wi-Fi interface `wlx200db02466d8`
+2. firmware allowed the `mt7601u` kernel driver to bind
+3. the host exposes Wi-Fi interface `wlx200db02466d8`
 4. the adapter can scan for nearby Wi-Fi networks
-5. the adapter successfully connected to SSID `white`
-6. the adapter received IPv4 address `192.168.1.102/24`
-7. a concrete `WLANCONF` file was prepared for the current lab SSID naming and DHCP plan
+5. the adapter connected to hotspot SSID `AIBONET`
+6. the host received IPv4 address `192.168.43.120/24`
+7. the robot obtained IP `192.168.43.8`
+8. `ping` to the robot succeeded
+9. `http://192.168.43.8/` responded as AIBO MIND 2

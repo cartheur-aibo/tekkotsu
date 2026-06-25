@@ -1,8 +1,10 @@
 # ERS-7 Connectivity
 
-This folder is for the real robot connectivity and monitoring track.
+This folder is for the real-robot connectivity and monitoring track.
 
-It is intentionally separate from the Tekkotsu framework internals. The goal here is to solve the practical problem of reaching, monitoring, and iterating on a live ERS-7 before we pile on new robot behaviors.
+It is intentionally separate from Tekkotsu framework internals. The goal here
+is to solve the practical problem of reaching, monitoring, and iterating on a
+live ERS-7 before piling on new robot behaviors.
 
 ## Scope
 
@@ -12,6 +14,8 @@ This workspace covers:
 - workstation-side network setup for this Debian machine
 - Tekkotsu/Open-R monitoring connectivity
 - repeatable operator checklists
+- the handoff between known-good stock MIND 2 networking and Tekkotsu-specific
+  gateway testing
 
 This workspace does not try to redesign the whole build system.
 
@@ -21,24 +25,43 @@ This workspace does not try to redesign the whole build system.
 - [LAB-SETUP.md](/home/cartheur/ame/aiventure/aiventure-github/cartheur-aibo/tekkotsu/ers7-connectivity/LAB-SETUP.md)
 - [HOST-PREFLIGHT.md](/home/cartheur/ame/aiventure/aiventure-github/cartheur-aibo/tekkotsu/ers7-connectivity/HOST-PREFLIGHT.md)
 - [SESSION-LOG.md](/home/cartheur/ame/aiventure/aiventure-github/cartheur-aibo/tekkotsu/ers7-connectivity/SESSION-LOG.md)
-- [WLANCONF.white.TXT](/home/cartheur/ame/aiventure/aiventure-github/cartheur-aibo/tekkotsu/ers7-connectivity/WLANCONF.white.TXT)
+- [WLANCONF.TXT](/home/cartheur/ame/aiventure/aiventure-github/cartheur-aibo/tekkotsu/ers7-connectivity/WLANCONF.TXT)
+- [probe-ers7.sh](/home/cartheur/ame/aiventure/aiventure-github/cartheur-aibo/tekkotsu/ers7-connectivity/probe-ers7.sh)
 
-## Current Assumption
+## What Is Already Proven
 
-We will likely need a dedicated legacy-friendly network for the robot:
+These are no longer guesses:
+
+- the real ERS-7 joined a compatible mobile hotspot named `AIBONET`
+- the robot obtained IP `192.168.43.8`
+- this Debian machine, after joining the same hotspot, reached the robot
+- `ping 192.168.43.8` succeeded
+- `http://192.168.43.8/` responded with `AIBO HTTPD v1.14 (Aperios)`
+- the web UI identified itself as `AIBO MIND 2 | Top Page`
+
+This is an important boundary:
+
+- stock MIND 2 HTTP on port `80` is proven
+- Tekkotsu/Open-R gateway connectivity is not yet proven
+
+That means this folder should now focus on moving from proven stock network
+reachability to proven Tekkotsu gateway reachability without confusing the two.
+
+## Strongest Current Assumption
+
+The strongest known-working network path is currently:
 
 ```text
-ERS-7 <-> legacy-compatible AP/router <-> this workstation
-                                 ^
-                                 |
-                         USB Wi-Fi adapter
+ERS-7 <-> compatible mobile hotspot named AIBONET <-> this workstation
 ```
 
-That keeps the robot off the main network and gives us a predictable environment for `802.11b`.
+We may still want a dedicated legacy-friendly AP/router later, but that is no
+longer a prerequisite for first reachability.
 
 ## Repo Signals We Already Have
 
-The checked-in `project/ms/` tree already shows the expected Open-R network path:
+The checked-in `project/ms/` tree already shows the expected Open-R network
+path:
 
 - `project/ms/open-r/system/objs/TCPGW.BIN` via `/MS/OPEN-R/SYSTEM/OBJS/TCPGW.BIN`
 - `project/ms/open-r/mw/conf/robotgw.cfg`
@@ -49,8 +72,10 @@ Relevant observations:
 
 - `robotgw.cfg` exposes the TCP gateway on port `59001`
 - string send/receive ports are configured on `59010` and `59011`
-- `object.cfg` loads `MAINOBJ.BIN`, `MOTOOBJ.BIN`, `TINYFTPD.BIN`, `SNDPLAY.BIN`, and `TCPGW.BIN`
-- `connect.cfg` wires sensor, motion, sound, and profiling channels among those objects
+- `object.cfg` loads `MAINOBJ.BIN`, `MOTOOBJ.BIN`, `TINYFTPD.BIN`,
+  `SNDPLAY.BIN`, and `TCPGW.BIN`
+- `connect.cfg` wires sensor, motion, sound, and profiling channels among
+  those objects
 
 ## Immediate Goal
 
@@ -58,55 +83,45 @@ Reach a milestone where:
 
 1. the ERS-7 joins a known Wi-Fi network
 2. this workstation can reach the robot over that network
-3. the Open-R/Tekkotsu gateway ports respond as expected
-4. the monitor/control workflow becomes testable
+3. the intended Tekkotsu/Open-R gateway payload is definitely the one booted
+4. gateway ports respond as expected
+5. the monitor/control workflow becomes testable
 
-## Bring-Up Checklist
+## Practical Bring-Up Order
 
-### 1. Hardware and network
+### 1. Prove stock network reachability first
 
-- Identify the exact Wi-Fi method for this workstation:
-  - USB Wi-Fi dongle
-  - old router or dedicated AP
-  - direct legacy bridge if available
-- Keep the network isolated from the main office/home Wi-Fi
-- Prefer simple, deterministic addressing
+- use the known-good `AIBONET` WLAN baseline
+- verify the robot joins Wi-Fi
+- verify `ping`
+- verify HTTP on port `80`
 
-### 2. ERS-7 media and config
+### 2. Only then move to Tekkotsu-specific media
 
-- Confirm which Memory Stick will be used for networking tests
-- Preserve a known-good backup of the current stick contents before edits
-- Audit `project/ms/open-r/mw/conf/` before changing network values
+- prepare the intended Tekkotsu/Open-R Memory Stick
+- boot that media
+- verify basic network reachability again
+- only after that test ports `59001`, `59010`, and `59011`
 
-### 3. Workstation readiness
+### 3. Keep the workflows separate
 
-- Confirm Linux sees the chosen USB Wi-Fi adapter
-- Decide whether NetworkManager or manual interface control will own that adapter
-- Record the workstation IP, subnet, and interface name used for AIBO work
-
-### 4. Robot reachability
-
-- Power on the ERS-7 with the chosen Memory Stick
-- Verify association with the dedicated network
-- Confirm the robot gets or uses the expected IP
-- Test basic reachability from this workstation
-
-### 5. Monitoring path
-
-- Test whether TCP port `59001` is reachable
-- Test whether string channels `59010` and `59011` are reachable
-- Bring up the Tekkotsu monitor tooling only after the network path is stable
+- stock MIND 2 success is not proof of Tekkotsu gateway success
+- a closed `59001` does not negate a successful stock MIND 2 Wi-Fi test
+- a reachable robot with no HTTP on port `80` may indicate a non-MIND 2 boot
+  path
 
 ## Open Questions
 
-- What AP/security modes does this specific ERS-7 setup support in practice?
-- Do we want DHCP or a fixed addressing plan?
-- Which workstation adapter has the best Linux support for this job?
-- Will we use the current `project/ms/` payload as-is for first connectivity tests, or a more conservative known-good stick image?
+- Which Tekkotsu payload will be the first one tested after stock MIND 2?
+- Does the current Tekkotsu Memory Stick layout boot cleanly on the ERS-7?
+- Once booted, do `59001`, `59010`, and `59011` actually respond?
+- Will we stay with the hotspot path for first Tekkotsu tests, or move to a
+  dedicated legacy AP?
 
 ## Recommended Next Moves
 
-1. Choose the actual USB Wi-Fi adapter and AP/router for the dedicated lab network.
-2. Fill in [LAB-SETUP.md](/home/cartheur/ame/aiventure/aiventure-github/cartheur-aibo/tekkotsu/ers7-connectivity/LAB-SETUP.md) with the real subnet and security plan.
-3. Walk through [HOST-PREFLIGHT.md](/home/cartheur/ame/aiventure/aiventure-github/cartheur-aibo/tekkotsu/ers7-connectivity/HOST-PREFLIGHT.md) on this Debian machine before the first live robot session.
-4. Use [SESSION-LOG.md](/home/cartheur/ame/aiventure/aiventure-github/cartheur-aibo/tekkotsu/ers7-connectivity/SESSION-LOG.md) during the first power-on and monitor attempt.
+1. Use the known-good `AIBONET` WLAN config in [WLANCONF.TXT](/home/cartheur/ame/aiventure/aiventure-github/cartheur-aibo/tekkotsu/ers7-connectivity/WLANCONF.TXT).
+2. Follow [ERS7-WIFI-STEPS.md](/home/cartheur/ame/aiventure/aiventure-github/cartheur-aibo/tekkotsu/ers7-connectivity/ERS7-WIFI-STEPS.md) to separate stock MIND 2 reachability from Tekkotsu gateway tests.
+3. Walk through [HOST-PREFLIGHT.md](/home/cartheur/ame/aiventure/aiventure-github/cartheur-aibo/tekkotsu/ers7-connectivity/HOST-PREFLIGHT.md) on this Debian machine before the next live robot session.
+4. Use [probe-ers7.sh](/home/cartheur/ame/aiventure/aiventure-github/cartheur-aibo/tekkotsu/ers7-connectivity/probe-ers7.sh) after each power-on to capture the exact network boundary that is alive.
+5. Use [SESSION-LOG.md](/home/cartheur/ame/aiventure/aiventure-github/cartheur-aibo/tekkotsu/ers7-connectivity/SESSION-LOG.md) during each power-on so stock and Tekkotsu outcomes do not get mixed together.

@@ -1,6 +1,10 @@
+#
+# Proven ERS-7 WLAN baseline from the successful hotspot session.
+#
 HOSTNAME=AIBO
-ESSID=Aibonet
+ESSID=AIBONET
 WEPENABLE=0
 APMODE=1
+CHANNEL=3
 USE_DHCP=1
 SSDP_ENABLE=1

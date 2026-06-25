@@ -2,6 +2,23 @@
 
 Use this file to keep live connectivity sessions structured and comparable.
 
+## Proven Reference Session
+
+Verified in the successful hotspot session:
+
+- SSID: `AIBONET`
+- host Wi-Fi interface: `wlx200db02466d8`
+- host Wi-Fi IPv4: `192.168.43.120/24`
+- hotspot/router IP: `192.168.43.1`
+- robot IP: `192.168.43.8`
+- `ping` worked
+- `http://192.168.43.8/` worked
+- server banner: `AIBO HTTPD v1.14 (Aperios)`
+- page identity: `AIBO MIND 2 | Top Page`
+
+This reference session proves stock network reachability, not yet Tekkotsu
+gateway reachability.
+
 ## Session Template
 
 Date:
@@ -25,9 +42,9 @@ IP plan:
 ## Current Baseline
 
 - Host Wi-Fi interface: `wlx200db02466d8`
-- Host Wi-Fi SSID: `white`
-- Host Wi-Fi IPv4: `192.168.1.102/24`
-- Host wired internet interface: `enp3s0`
+- Preferred test SSID: `AIBONET`
+- Known-good host Wi-Fi IPv4: `192.168.43.120/24`
+- Known-good robot IP: `192.168.43.8`
 
 ## Pre-flight
 
@@ -43,6 +60,7 @@ IP plan:
 - network association result:
 - robot IP observed:
 - host reachability result:
+- port 80 result:
 - port 59001 result:
 - port 59010 result:
 - port 59011 result:

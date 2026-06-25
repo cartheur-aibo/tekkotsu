@@ -4,12 +4,13 @@ Use this checklist on the Debian workstation before powering on the robot.
 
 ## Goal
 
-Make sure this machine is ready to participate in a dedicated ERS-7 network without disturbing the normal workstation connection.
+Make sure this machine is ready to participate in the same network as the
+robot without mixing up stock MIND 2 success with Tekkotsu gateway success.
 
 ## 1. Hardware
 
-- USB Wi-Fi adapter connected
-- adapter has a known Linux-friendly chipset
+- Wi-Fi adapter connected and usable
+- adapter has a Linux-supported chipset
 - any required external antenna attached
 
 ## 2. Linux detection
@@ -31,51 +32,51 @@ lsusb
 
 ## 3. Network ownership
 
-Decide which component controls the USB adapter:
+Decide which component controls the adapter:
 
 - `NetworkManager`
 - manual `ip` / `iw` flow
 
-Pick one approach and stick to it for the session.
+Pick one approach and keep it stable for the session.
 
-## 4. Dedicated network values
+## 4. Network values to record before boot
 
-Before the robot comes up, write down:
+Write down:
 
 - SSID
 - security mode
 - subnet
-- router/AP IP
+- hotspot/router IP
 - expected workstation IP
 - expected robot IP or DHCP range
 
-Current known values on this host:
+## 5. Current strongest known-good values
+
+These values were actually observed during the successful hotspot session:
 
 - Wi-Fi interface: `wlx200db02466d8`
-- SSID: `white`
-- current host Wi-Fi address: `192.168.1.102/24`
-- wired internet interface: `enp3s0`
+- SSID: `AIBONET`
+- host Wi-Fi address: `192.168.43.120/24`
+- hotspot/router IP: `192.168.43.1`
+- robot IP: `192.168.43.8`
 
-## 5. Basic workstation checks
+This is the best baseline to reuse first.
+
+## 6. Basic workstation checks
 
 Verify:
 
-- the USB adapter is not accidentally connected to the normal network
-- the primary workstation network still works independently
-- the dedicated adapter is up and ready
+- the host is on the intended ERS-7 network, not some other remembered SSID
+- the adapter is up
+- the robot-side network is active
 
-Current validated state:
-
-- `wlx200db02466d8` is connected to `white`
-- `enp3s0` remains connected for normal internet use
-
-## 6. Robot-facing checks
+## 7. Robot-facing checks
 
 Once the ERS-7 is on the network, test in this order:
 
-1. link association visible on the AP
-2. workstation can reach the robot IP
-3. TCP `59001`
+1. workstation can reach the robot IP
+2. stock HTTP on port `80` if testing MIND 2 reachability
+3. TCP `59001` if testing Tekkotsu gateway reachability
 4. TCP `59010`
 5. TCP `59011`
 
@@ -83,19 +84,36 @@ Suggested manual checks:
 
 ```bash
 ping ROBOT_IP
+curl -I http://ROBOT_IP/
 nc -vz ROBOT_IP 59001
 nc -vz ROBOT_IP 59010
 nc -vz ROBOT_IP 59011
 ```
 
-## 7. If It Fails
+Or use:
+
+```bash
+./ers7-connectivity/probe-ers7.sh ROBOT_IP all
+```
+
+## 8. Interpretation
+
+- `ping` works and HTTP on `80` works:
+  stock MIND 2 reachability is proven
+- `ping` works and `59001` is closed:
+  Tekkotsu gateway is not yet proven
+- no `ping`:
+  do not jump ahead to Tekkotsu port debugging
+
+## 9. If It Fails
 
 Capture the failure mode precisely:
 
 - adapter not detected
-- workstation cannot join the AP
+- workstation cannot join the network
 - robot does not associate
 - robot associates but has no IP
-- IP exists but ports are closed
+- IP exists but stock HTTP is closed
+- IP exists but Tekkotsu ports are closed
 
-That distinction will save a lot of time later.
+That distinction saves a lot of time later.
